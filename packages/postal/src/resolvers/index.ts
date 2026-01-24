@@ -1,0 +1,6 @@
+export type { PostalData, PostalResolver } from './types.js'
+export { BundledResolver, bundledResolver } from './bundled.js'
+export { ApiResolver, createApiResolver } from './api.js'
+export type { ApiResolverOptions } from './api.js'
+export { CustomResolver, createCustomResolver } from './custom.js'
+export type { CustomResolveFunction, CustomResolverOptions } from './custom.js'

@@ -1,0 +1,53 @@
+{
+  "name": "@haro/jpform-zod",
+  "version": "0.1.0",
+  "description": "Zod schemas for Japanese business forms",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "japanese",
+    "form",
+    "zod",
+    "validation",
+    "schema"
+  ],
+  "author": "Hideki Matsuoka",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haro/jpform.git",
+    "directory": "packages/zod"
+  },
+  "dependencies": {
+    "@haro/jpform-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "zod": ">=3.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "zod": "^3.22.4"
+  }
+}

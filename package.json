@@ -1,0 +1,32 @@
+{
+  "name": "jpform",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Japanese business form utilities - Headless UI library",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint packages/*/src --ext .ts,.tsx",
+    "lint:fix": "eslint packages/*/src --ext .ts,.tsx --fix",
+    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\"",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean",
+    "update-postal-data": "tsx scripts/download-postal-data.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "prettier": "^3.2.4",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "packageManager": "pnpm@8.14.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
