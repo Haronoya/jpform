@@ -102,7 +102,18 @@ export function isMobilePhone(value: string): boolean {
 export function isLandlinePhone(value: string): boolean {
   const digits = extractPhoneDigits(value)
   // 0から始まり、070/080/090/050/0120/0800 以外の10桁
-  return /^0[1-9][0-9]{8}$/.test(digits) && !/^0[5789]0/.test(digits)
+  if (!/^0[1-9][0-9]{8}$/.test(digits)) {
+    return false
+  }
+  // 携帯・IP電話を除外
+  if (/^0[5789]0/.test(digits)) {
+    return false
+  }
+  // フリーダイヤルを除外
+  if (/^0120/.test(digits)) {
+    return false
+  }
+  return true
 }
 
 /**

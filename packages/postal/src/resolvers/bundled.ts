@@ -9,7 +9,7 @@ import type { PostalData, PostalResolver } from './types.js'
 // 同梱データをインポート（ビルド時に生成される）
 import postalData from '../../data/postal.json' with { type: 'json' }
 
-const data = postalData as PostalData
+const data = postalData as unknown as PostalData
 
 /**
  * 同梱データを使用する郵便番号Resolver

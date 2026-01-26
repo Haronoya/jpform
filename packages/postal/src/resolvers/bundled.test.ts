@@ -23,7 +23,7 @@ describe('BundledResolver', () => {
   })
 
   it('全角数字を処理する', async () => {
-    const addresses = await bundledResolver.resolve('１００００００１')
+    const addresses = await bundledResolver.resolve('１０００００１')
 
     expect(addresses).toHaveLength(1)
     expect(addresses[0]?.prefecture).toBe('東京都')
