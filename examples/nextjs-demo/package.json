@@ -1,0 +1,29 @@
+{
+  "name": "nextjs-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@haro/jpform-core": "workspace:*",
+    "@haro/jpform-postal": "workspace:*",
+    "@haro/jpform-react": "workspace:*",
+    "@haro/jpform-zod": "workspace:*",
+    "@haro/jpform-testing": "workspace:*",
+    "@hookform/resolvers": "^3.3.4",
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.50.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3"
+  }
+}

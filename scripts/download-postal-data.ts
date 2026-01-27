@@ -86,14 +86,15 @@ async function parseCSV(csvPath: string): Promise<PostalData> {
   // 都道府県ごとの市区町村マップ
   const cityIndexMap: Record<string, Map<string, number>> = {}
 
-  const fileStream = createReadStream(csvPath)
+  // Shift_JISをUTF-8に変換
+  const iconv = (await import('iconv-lite')).default
+  const fileStream = createReadStream(csvPath).pipe(iconv.decodeStream('Shift_JIS'))
   const rl = createInterface({
     input: fileStream,
     crlfDelay: Infinity
   })
 
   for await (const line of rl) {
-    // CSVをパース（Shift_JISのためデコードが必要だが、ここではUTF-8を想定）
     const fields = parseCSVLine(line)
 
     if (fields.length < 9) continue

@@ -1,0 +1,57 @@
+name: Update Postal Data
+
+on:
+  schedule:
+    # 毎月1日 00:00 UTC (日本時間 09:00)
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+    # 手動実行も可能
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Update postal data
+        run: pnpm run update-postal-data
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet packages/postal/data/postal.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: 'chore: update postal data'
+          title: '郵便番号データ更新'
+          body: |
+            日本郵便の最新データで郵便番号データを更新しました。
+
+            - データソース: https://www.post.japanpost.jp/zipcode/download.html
+            - 更新日時: ${{ github.event.repository.updated_at }}
+          branch: update-postal-data
+          delete-branch: true
+          labels: |
+            automated
+            data-update

@@ -16,6 +16,8 @@ export {
   fakeLastName,
   fakeFirstName,
   fakeFullName,
+  // Convenience faker object
+  faker,
 } from './faker/index.js'
 
 export type {
