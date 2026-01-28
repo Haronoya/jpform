@@ -1,5 +1,12 @@
 # @haro/jpform
 
+[![npm version](https://img.shields.io/npm/v/@haro/jpform-core.svg)](https://www.npmjs.com/package/@haro/jpform-core)
+[![npm downloads](https://img.shields.io/npm/dm/@haro/jpform-core.svg)](https://www.npmjs.com/package/@haro/jpform-core)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@haro/jpform-core)](https://bundlephobia.com/package/@haro/jpform-core)
+[![license](https://img.shields.io/npm/l/@haro/jpform-core.svg)](https://github.com/Haronoya/jpform/blob/main/LICENSE)
+
+[Live Demo](https://haronoya.github.io/jpform/)
+
 日本の業務フォームに特化したHeadless UIライブラリ。ロジックのみ提供し、UIは利用者に委ねます。
 
 ## 特徴
@@ -260,30 +267,13 @@ function App() {
 
 ## 郵便番号データについて
 
-デフォルトでは同梱データ（120,673件）を使用するため、外部APIへのリクエストは発生しません。
+デフォルトでは同梱データを使用するため、外部APIへのリクエストは発生しません。
 
 - **データソース**: 日本郵便 郵便番号データ
-- **データ件数**: 120,673件（全国）
 - **更新頻度**: 月次（GitHub Actionsで自動更新）
 - **ライセンス**: 日本郵便のデータは再配布可能
 
 外部APIを使用する場合は `createApiResolver()` を使用してください（デフォルトは zipcloud API）。
-
-## ふりがな辞書について
-
-ふりがな自動生成機能は、内蔵の辞書を使用します。
-
-- **姓**: 約100件（佐藤、鈴木、高橋、田中など一般的な姓）
-- **名**: 約80件（太郎、花子、翔、陽菜など一般的な名）
-
-辞書にない名前は `undefined` を返します。カスタムの読みを追加するには `addLastNameReading()` / `addFirstNameReading()` を使用してください。
-
-```ts
-import { addLastNameReading, getLastNameFurigana } from '@haro/jpform-core'
-
-addLastNameReading('御手洗', 'ミタライ')
-getLastNameFurigana('御手洗') // 'ミタライ'
-```
 
 ## 開発
 

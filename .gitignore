@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 
 # Temp directory for postal data download
 .temp/
+docs/RELEASING.md
+.gitignore
+docs/仕様.md
