@@ -11,7 +11,7 @@ export function normalizePhone(value: string): string {
   let normalized = toHankaku(value)
 
   // 数字とハイフン以外を除去
-  normalized = normalized.replace(/[^0-9\-]/g, '')
+  normalized = normalized.replace(/[^0-9-]/g, '')
 
   return normalized
 }

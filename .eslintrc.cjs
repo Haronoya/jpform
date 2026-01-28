@@ -8,6 +8,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
+    project: ['./packages/*/tsconfig.json'],
+    tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint'],
   extends: [
@@ -22,10 +24,14 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.test.ts'],
+      files: ['*.test.ts', '*.test.tsx'],
       rules: {
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/unbound-method': 'off',
+        '@typescript-eslint/require-await': 'off',
       },
     },
   ],

@@ -1,4 +1,4 @@
-import { renderHook, waitFor, act } from '@testing-library/react'
+import { renderHook, act } from '@testing-library/react'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import type { ReactNode } from 'react'
 import type { JPAddress } from '@haro/jpform-core'
@@ -18,7 +18,7 @@ const createMockResolver = (result: JPAddress[] = [mockAddress]): PostalResolver
   resolve: vi.fn().mockResolvedValue(result),
 })
 
-const createWrapper = (resolver?: PostalResolver) => {
+const createWrapper = (resolver: PostalResolver) => {
   return function Wrapper({ children }: { children: ReactNode }) {
     return (
       <JPFormProvider postalResolver={resolver} debounceMs={0}>
@@ -66,7 +66,7 @@ describe('usePostalCode', () => {
 
   it('resolves postal code automatically with debounce', async () => {
     const mockResolver = createMockResolver()
-    const { result, rerender } = renderHook(
+    const { rerender } = renderHook(
       ({ postalCode }) => usePostalCode(postalCode, { resolver: mockResolver, debounceMs: 300 }),
       {
         initialProps: { postalCode: '' },
@@ -100,7 +100,7 @@ describe('usePostalCode', () => {
     })
 
     await act(async () => {
-      const addresses = await result.current.resolve('invalid')
+      await result.current.resolve('invalid')
     })
 
     expect(mockResolver.resolve).not.toHaveBeenCalled()
@@ -174,6 +174,6 @@ describe('usePostalCode', () => {
 
     expect(customResolver.resolve).toHaveBeenCalled()
     expect(defaultResolver.resolve).not.toHaveBeenCalled()
-    expect(result.current.addresses[0].city).toBe('新宿区')
+    expect(result.current.addresses[0]?.city).toBe('新宿区')
   })
 })

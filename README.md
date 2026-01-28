@@ -86,6 +86,40 @@ function NameInput() {
 }
 ```
 
+### ふりがな自動生成
+
+```tsx
+import { useFurigana } from '@haro/jpform-react'
+
+function NameForm() {
+  const [lastName, setLastName] = useState('')
+  const [lastNameKana, setLastNameKana] = useState('')
+  const { getLastNameReading } = useFurigana({ format: 'hiragana' })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setLastName(value)
+
+    // 辞書に登録されていれば自動でふりがなを設定
+    const reading = getLastNameReading(value)
+    if (reading) {
+      setLastNameKana(reading) // 「山田」→「やまだ」
+    }
+  }
+
+  return (
+    <div>
+      <input value={lastName} onChange={handleChange} placeholder="姓" />
+      <input
+        value={lastNameKana}
+        onChange={(e) => setLastNameKana(e.target.value)}
+        placeholder="せい"
+      />
+    </div>
+  )
+}
+```
+
 ### Zodバリデーション
 
 ```tsx
@@ -93,9 +127,9 @@ import { postalCodeSchema, phoneSchema, addressSchema } from '@haro/jpform-zod'
 import { z } from 'zod'
 
 const formSchema = z.object({
-  postalCode: postalCodeSchema,
-  phone: phoneSchema,
-  address: addressSchema,
+  postalCode: postalCodeSchema(),
+  phone: phoneSchema(),
+  address: addressSchema(),
 })
 
 // React Hook Form との連携
@@ -149,6 +183,19 @@ const person = faker.person()
 | `isLandlinePhone(value)` | 固定電話番号か |
 | `isFreeDialPhone(value)` | フリーダイヤルか |
 
+#### ふりがな関数
+
+| 関数 | 説明 |
+|------|------|
+| `getLastNameFurigana(lastName, options?)` | 姓からふりがなを取得 |
+| `getFirstNameFurigana(firstName, options?)` | 名からふりがなを取得 |
+| `getFullNameFurigana(fullName, options?)` | フルネームからふりがなを取得 |
+| `addLastNameReading(lastName, reading)` | カスタム姓を辞書に追加 |
+| `addFirstNameReading(firstName, reading)` | カスタム名を辞書に追加 |
+
+**オプション:**
+- `format: 'katakana' | 'hiragana'` - 出力形式（デフォルト: `'katakana'`）
+
 #### 型定義
 
 | 型 | 説明 |
@@ -193,6 +240,7 @@ const customResolver = createCustomResolver({
 | `usePostalCode(postalCode?, options?)` | 郵便番号→住所解決 |
 | `useConverter()` | 文字変換ユーティリティ |
 | `useInputConverter(converter, onChange)` | 入力変換ハンドラ生成 |
+| `useFurigana(options?)` | ふりがな自動生成 |
 
 #### Provider
 
@@ -212,13 +260,30 @@ function App() {
 
 ## 郵便番号データについて
 
-デフォルトでは同梱データを使用するため、外部APIへのリクエストは発生しません。
+デフォルトでは同梱データ（120,673件）を使用するため、外部APIへのリクエストは発生しません。
 
 - **データソース**: 日本郵便 郵便番号データ
+- **データ件数**: 120,673件（全国）
 - **更新頻度**: 月次（GitHub Actionsで自動更新）
 - **ライセンス**: 日本郵便のデータは再配布可能
 
 外部APIを使用する場合は `createApiResolver()` を使用してください（デフォルトは zipcloud API）。
+
+## ふりがな辞書について
+
+ふりがな自動生成機能は、内蔵の辞書を使用します。
+
+- **姓**: 約100件（佐藤、鈴木、高橋、田中など一般的な姓）
+- **名**: 約80件（太郎、花子、翔、陽菜など一般的な名）
+
+辞書にない名前は `undefined` を返します。カスタムの読みを追加するには `addLastNameReading()` / `addFirstNameReading()` を使用してください。
+
+```ts
+import { addLastNameReading, getLastNameFurigana } from '@haro/jpform-core'
+
+addLastNameReading('御手洗', 'ミタライ')
+getLastNameFurigana('御手洗') // 'ミタライ'
+```
 
 ## 開発
 

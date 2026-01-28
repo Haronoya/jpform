@@ -32,3 +32,13 @@ export {
   PREFECTURES,
 } from './types/index.js'
 export type { JPAddress, Prefecture, PrefectureCode } from './types/index.js'
+
+// Furigana
+export {
+  getLastNameFurigana,
+  getFirstNameFurigana,
+  getFullNameFurigana,
+  addLastNameReading,
+  addFirstNameReading,
+} from './furigana/index.js'
+export type { FuriganaFormat, FuriganaOptions } from './furigana/index.js'
