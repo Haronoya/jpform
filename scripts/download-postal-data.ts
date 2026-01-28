@@ -12,7 +12,6 @@ import { pipeline } from 'node:stream/promises'
 import { createInterface } from 'node:readline'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createUnzip } from 'node:zlib'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const POSTAL_DATA_URL = 'https://www.post.japanpost.jp/zipcode/dl/kogaki/zip/ken_all.zip'
@@ -100,12 +99,15 @@ async function parseCSV(csvPath: string): Promise<PostalData> {
     if (fields.length < 9) continue
 
     const postalCode = fields[2]?.replace(/"/g, '') ?? ''
-    const prefKana = fields[3]?.replace(/"/g, '') ?? ''
-    const cityKana = fields[4]?.replace(/"/g, '') ?? ''
-    const townKana = fields[5]?.replace(/"/g, '') ?? ''
+    const cityKanaRaw = fields[4]?.replace(/"/g, '') ?? ''
+    const townKanaRaw = fields[5]?.replace(/"/g, '') ?? ''
     const pref = fields[6]?.replace(/"/g, '') ?? ''
     const city = fields[7]?.replace(/"/g, '') ?? ''
     const town = fields[8]?.replace(/"/g, '') ?? ''
+
+    // 半角カナを全角カナに変換
+    const cityKana = hankakuToZenkakuKana(cityKanaRaw)
+    const townKana = hankakuToZenkakuKana(townKanaRaw)
 
     if (!postalCode || postalCode.length !== 7) continue
 
@@ -192,6 +194,52 @@ function normalizeTown(town: string): string {
     return ''
   }
   return town
+}
+
+// 半角カナから全角カナへの変換マップ
+const HANKAKU_TO_ZENKAKU_KANA: Record<string, string> = {
+  'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+  'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+  'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+  'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+  'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+  'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+  'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+  'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+  'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+  'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+  'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+  'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ', 'ｯ': 'ッ',
+  'ﾞ': '゛', 'ﾟ': '゜', 'ｰ': 'ー',
+  '(': '（', ')': '）',
+}
+
+// 濁点・半濁点の結合マップ
+const DAKUTEN_MAP: Record<string, string> = {
+  'カ゛': 'ガ', 'キ゛': 'ギ', 'ク゛': 'グ', 'ケ゛': 'ゲ', 'コ゛': 'ゴ',
+  'サ゛': 'ザ', 'シ゛': 'ジ', 'ス゛': 'ズ', 'セ゛': 'ゼ', 'ソ゛': 'ゾ',
+  'タ゛': 'ダ', 'チ゛': 'ヂ', 'ツ゛': 'ヅ', 'テ゛': 'デ', 'ト゛': 'ド',
+  'ハ゛': 'バ', 'ヒ゛': 'ビ', 'フ゛': 'ブ', 'ヘ゛': 'ベ', 'ホ゛': 'ボ',
+  'ウ゛': 'ヴ',
+  'ハ゜': 'パ', 'ヒ゜': 'ピ', 'フ゜': 'プ', 'ヘ゜': 'ペ', 'ホ゜': 'ポ',
+}
+
+/**
+ * 半角カナを全角カナに変換
+ */
+function hankakuToZenkakuKana(str: string): string {
+  // まず単純な置換
+  let result = ''
+  for (const char of str) {
+    result += HANKAKU_TO_ZENKAKU_KANA[char] ?? char
+  }
+
+  // 濁点・半濁点の結合
+  for (const [from, to] of Object.entries(DAKUTEN_MAP)) {
+    result = result.replaceAll(from, to)
+  }
+
+  return result
 }
 
 async function main() {
